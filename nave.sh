@@ -926,9 +926,11 @@ add_named_env () {
   mkdirp "$NAVE_ROOT/$name/lib/node_modules"
   mkdirp "$NAVE_ROOT/$name/share/man"
 
-  ln -sf -- "$NAVE_ROOT/$version/bin/node" "$NAVE_ROOT/$name/bin/node"
-  ln -sf -- "$NAVE_ROOT/$version/bin/npm"  "$NAVE_ROOT/$name/bin/npm"
-  ln -sf -- "$NAVE_ROOT/$version/bin/node-waf" "$NAVE_ROOT/$name/bin/node-waf"
+
+  find "$NAVE_ROOT/$version/bin/" \( -type f -o -type l \) -print0 \
+    | while IFS= read -d '' -r file
+      do ln -sf -- "$file" "$NAVE_ROOT/$name/bin/$(basename "$file")"
+      done
 }
 
 nave_clean () {
